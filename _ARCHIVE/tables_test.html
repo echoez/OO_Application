@@ -1,0 +1,83 @@
+<html ng-app="countryApp">
+  <head>
+    <meta charset="utf-8">
+    <title>Outstanding_Orders</title>
+    <script src="angular.js"></script>
+    <script>
+      var countryApp = angular.module('countryApp', []);
+      countryApp.controller('OOCtrl', function ($scope, $http){
+        $http.get('countries.json').success(function(data) {
+          $scope.ooreport = data;
+        });
+
+        $scope.sortField = 'ORDER_ID';
+      });
+
+
+    </script>
+    <style>
+    .worktype {
+      width: 100px;
+    }
+    </style>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body ng-controller="OOCtrl">
+      <header>
+    <div class="search_container">
+      <h1>OO Report</h1>
+      <input ng-model="query" type="text" placeholder="Enter Shipment ID" class="form-control" maxlength="10"></input>
+      <!-- <input type="button" class="btn btn-default btn-sm" value="search"> -->
+      <p id="helpblock">Max 10 Characters</p>
+    
+    </div>
+  </header>
+    <div class="wrapper">
+    <div id="b-title"><h1><p class="bg-info">There are <b>{{ooreport.length}}</b> total Outstanding Shipments</p></h1></div></p>
+   
+    <p style="text-align: center">
+  <a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Export Date</button></a>
+
+    <a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Authorize Date</button></a>
+</p>
+    
+    <table class="table table-striped table-hover table-condensed table-bordered">
+
+      <tr>
+         <th>
+        <input type="checkbox" 
+          ng-click="selectAll($event)"
+          ng-checked="isSelectedAll()">
+      </th>
+        <th><a href="" ng-click="sortfield = '' ; reverse = !reverse">#</a></th>
+        <th><a href="" ng-click="sortField = 'SHIPMENT_ID' ; reverse = !reverse">Shipment ID</a></th>
+        <th><a href="" ng-click="sortField = 'ORDER_ID' ; reverse = !reverse">Order N</a></th>
+        <th><a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse">Exported</a></th>
+        <th><a href="" ng-click="sortField = 'STATUS' ; reverse = !reverse">Status</a></th>
+        <th><a href="" ng-click="sortField = 'WORKTYPE' ; reverse = !reverse">Worktype</a></th>
+        <th><a href="" ng-click="sortField = 'TRACKING_NUMBER'; reverse = !reverse">Tracking</a></th>
+        <th><a href="">Action</a></th>
+      </tr>
+
+      <tr ng-repeat="shipment in ooreport | filter:query | orderBy:sortField:reverse" ng-class="getSelectedClass(e)">
+          <td>
+        <input type="checkbox" name="selected"
+          ng-checked="isSelected(e.id)"
+          ng-click="updateSelection($event, e.id)">
+      </td>
+        <td>{{$index + 1}}</td>
+        <td>{{shipment.SHIPMENT_ID}}</td>
+        <td><a href="">{{shipment.ORDER_ID}}</a></td>
+        <td>{{shipment.EXPORT_TIME}}</td>
+        <td>{{shipment.STATUS}}</td>
+        <td class="worktype">{{shipment.WORKTYPE}}</td>
+        <td>{{shipment.TRACKING_NUMBER}}</td>
+        <td>  <button class="btn_slim btn-default" ng-click="launch('notify')">View Options</button></td>
+      </tr>
+
+    </table>
+
+    </div>
+  </body>
+</html>

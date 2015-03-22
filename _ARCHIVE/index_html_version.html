@@ -1,0 +1,267 @@
+<html ng-app="OutstandingApp">
+   <head>
+      <meta charset="utf-8">
+      <title>Outstanding_Orders</title>
+        <script src="angular.min.js"></script>
+      <script>
+         var OutstandingApp = angular.module('OutstandingApp', []);
+         OutstandingApp.controller('OOCtrl', function ($scope, $http){
+           $http.get('oo_report_min.json').success(function(data) {
+             $scope.ooreport = data;
+           });
+           $scope.sortField = 'ORDER_ID';
+         });
+
+
+      </script>
+      <link href="dropdowns-enhancement.css" rel="stylesheet">
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="css/style.css" rel="stylesheet">
+   </head>
+   <body ng-controller="OOCtrl">
+      <header id="_top">
+         <div class="search_container">
+          <div class="inputwrap">
+            <input ng-model="query" type="text" ng-change="filter()" placeholder="Search Order Information" class="form-control" maxlength="20"></input><button type="button" class="btn btn-info insidebutton" ng-show="query.length" ng-click="query = ''">Clear</button></div>
+            <!-- <input type="button" class="btn btn-default btn-sm" value="search"> -->
+            <p id="helpblock">
+            <a href="#reportoo"> <button type="button" class="btn btn-default btn-xs">OO Report</button></a> <a href="#actionoo"><button type="button" class="btn btn-default btn-xs">OO Action Report</button></a>
+           </p>
+         </div>
+
+      </header>
+        <div id="b-title">
+            <h1>
+               <p class="bg-info">Displaying {{ooreport.length}} of <b>{{ooreport.length}}</b> Outstanding Shipments</p>
+            </h1>
+         </div>
+         <div class="wrapper">
+         <div class="row">
+                        <div class="col-xs-3">
+                            <div class="small-stat clearfix">
+                            <span ng-click="query = 'Oversold'" class="small-stat-icon orange"><i class="glyphicon glyphicon glyphicon-th"></i></span>
+                                <div class="small-stat-info">
+                                    <span>320</span>
+                                    Oversolds
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="small-stat clearfix">
+                                <span ng-click="query = 'Hold'" class="small-stat-icon tar"><i class="glyphicon glyphicon glyphicon-th"></i></span>
+                                <div class="small-stat-info">
+                                    <span>0</span>
+                                    Holds
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="small-stat clearfix">
+                                <span ng-click="query = 'Not_Settled'" class="small-stat-icon pink"><i class="glyphicon glyphicon glyphicon-th"></i></span>
+                                <div class="small-stat-info">
+                                    <span>30</span>
+                                    Not Settled
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="small-stat clearfix">
+                                <span ng-click="query = 'Missing_FF'" class="small-stat-icon green"><i class="glyphicon glyphicon glyphicon-th"></i></span>
+                                <div class="small-stat-info">
+                                    <span>327</span>
+                                    Missing FF
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+      <div class="wrapper">
+      
+<button type="button" class="btn btn-primary btn-lg btn-block"  ng-show="query.length" ng-click="query = ''">Filtering Results by <b>"<u>{{query}}</u>"</b>. Want to Clear?</button>
+      
+  <div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div id="reportoo" class="panel-heading"><b>Outstanding Order Report</b> (2/28/2015) - (3/11/2015)</div>
+  <div class="panel-body">
+  <p>
+
+     I am leaving early to make sure any details are taken care of before your arrival! Three people are driving, David A., Jackie, and Shah. Both David A. and Jackie can hold 2-3 people in their car. Also, I’ve ordered two cabs to meet everyone by the turnstiles at 4pm:
+         </p>
+         <hr>
+         <p style="text-align: center">
+            <a href="" ng-click="sortField = 'ORDER_ID' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Order Number</button></a>
+            <a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Export Date</button></a>
+            <a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Authorize Date</button></a>
+         </p>
+  </div>
+         <table class="table table-striped table-hover table-condensed table-bordered">
+            <tr>
+               <th>
+                  <input type="checkbox" 
+                     ng-click="selectAll($event)"
+                     ng-checked="isSelectedAll()">
+               </th>
+               <th><a href="" ng-click="sortfield = 'SHIPMENT_ID' ; reverse = !reverse">#</a></th>
+               <th><a href="" ng-click="sortField = 'SHIPMENT_ID' ; reverse = !reverse">Shipment ID</a></th>
+               <th><a href="" ng-click="sortField = 'ORDER_ID' ; reverse = !reverse">Order N</a></th>
+               <th><a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse">Exported</a></th>
+               <th><a href="" ng-click="sortField = 'STATUS' ; reverse = !reverse">Status</a></th>
+               <th><a href="" ng-click="sortField = 'WORKTYPE' ; reverse = !reverse">Worktype</a></th>
+               <th><a href="" ng-click="sortField = 'TRACKING_NUMBER'; reverse = !reverse">Tracking</a></th>
+               <th><a href="">Action</a></th>
+            </tr>
+            <tr ng-repeat="shipment in ooreport | filter:query | orderBy:sortField:reverse" ng-class="getSelectedClass(e)">
+               <td>
+                  <input type="checkbox" name="selected"
+                     ng-checked="isSelected(e.id)"
+                     ng-click="updateSelection($event, e.id)">
+               </td>
+               <td>{{$index + 1}}</td>
+               <td>{{shipment.SHIPMENT_ID}}</td>
+               <td><a href="">{{shipment.ORDER_ID}}</a></td>
+               <td>{{shipment.EXPORT_TIME  | date}}</td>
+               <td><span class="label label-{{shipment.STATUS}}">{{shipment.STATUS}}</span></td>
+               <td>{{shipment.WORKTYPE}}</td>
+               <td>{{shipment.TRACKING_NUMBER}}</td>
+               <td>
+
+
+<div class="btn-group">
+            <button class="btn btn-default" data-label-placement=""><i style="color: #8CB28C;"class="glyphicon glyphicon-ok"></i></button>
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+               <li>
+                <input type="radio" id="ex7_2" name="ex7" value="1">
+                <label for="ex7_2"><i class="glyphicon glyphicon-trash data-label"></i> Uograde</label>
+              </li>
+              <li>
+                <input type="radio" id="ex7_2" name="ex7" value="2">
+                <label for="ex7_2"><i class="glyphicon glyphicon-trash data-label"></i> Requeue</label>
+              </li>
+              <li>
+                <input type="radio" id="ex7_3" name="ex7" value="3">
+                <label for="ex7_3"><i class="glyphicon glyphicon-print data-label"></i> Resolve</label>
+              </li>
+            </ul>
+          </div>
+        
+        
+               </td>
+            </tr>
+         </table>
+
+<br></div>
+</div>
+
+ <div class="wrapper">
+ <div class="panel panel-default">
+  <div class="panel-heading"><b>Action Taken</b> (2/28/2015) - (3/11/2015)</div> 
+      <div class="panel-body">
+      <p>
+         I am leaving early to make sure any details are taken care of 
+             </p>
+             <hr>
+      </div>
+         <table id="actionoo" class="table table-striped table-hover table-condensed table-bordered">
+             <tr>
+
+               <th><a href="" ng-click="sortfield = 'SHIPMENT_ID' ; reverse = !reverse">Order</a></th>
+               <th><a href="" ng-click="sortField = 'SHIPMENT_ID' ; reverse = !reverse">Shipment</a></th>
+               <th><a href="" ng-click="sortField = 'ORDER_ID' ; reverse = !reverse">Action Taken</a></th>
+               <th><a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse">Name</a></th>
+               <th><a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse">Time</a></th>
+               <th><a href="" ng-click="sortField = 'WORKTYPE' ; reverse = !reverse">Options</a></th>
+               
+            </tr>
+
+            <tr>
+            <td>1930022</td>
+            <td>3729832</td>
+            <td>Fraud</td>
+            <td>Hello</td>
+            <td>Hello</td>
+            <td>
+            <div class="btn-group">
+            <button class="btn btn-default" data-label-placement=""><i style="color: #BB285B;" class="glyphicon glyphicon-remove"></i></button>
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+              <li>
+                <input type="radio" id="ex7_2" name="ex7" value="2">
+                <label for="ex7_2"><i class="glyphicon glyphicon-trash data-label"></i>Requeue</label>
+              </li>
+              <li>
+                <input type="radio" id="ex7_3" name="ex7" value="3">
+                <label for="ex7_3"><i class="glyphicon glyphicon-print data-label"></i> Resolve</label>
+              </li>
+            </ul>
+          </div>
+            </td>
+            </tr>
+                        <tr>
+            <td>19300464</td>
+            <td>8292090</td>
+            <td>Requeue Request</td>
+            <td>Hello</td>
+            <td>Hello</td>
+            <td>   
+            <div class="btn-group">
+            <button class="btn btn-default" data-label-placement=""><i style="color: #BB285B;" class="glyphicon glyphicon-remove"></i></button>
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+              <li>
+                <input type="radio" id="ex7_2" name="ex7" value="2">
+                <label for="ex7_2"><i class="glyphicon glyphicon-trash data-label"></i>Requeue</label>
+              </li>
+              <li>
+                <input type="radio" id="ex7_3" name="ex7" value="3">
+                <label for="ex7_3"><i class="glyphicon glyphicon-print data-label"></i> Resolve</label>
+              </li>
+            </ul>
+          </div>
+          </td>
+          
+            </tr>
+                        <tr>
+            <td>19141333</td>
+            <td>7892922</td>
+            <td>Cancel Request</td>
+            <td>Hello</td>
+            <td>Hello</td>
+            <td>
+                 <div class="btn-group">
+            <button class="btn btn-default" data-label-placement=""><i style="color: #BB285B;" class="glyphicon glyphicon-remove"></i></button>
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+              <li>
+                <input type="radio" id="ex7_2" name="ex7" value="2">
+                <label for="ex7_2"><i class="glyphicon glyphicon-trash data-label"></i>Requeue</label>
+              </li>
+              <li>
+                <input type="radio" id="ex7_3" name="ex7" value="3">
+                <label for="ex7_3"><i class="glyphicon glyphicon-print data-label"></i> Resolve</label>
+              </li>
+            </ul>
+          </div>
+            </td>
+           
+            </tr>
+         </table>
+
+</div>
+
+         </div>
+
+  </div>
+<div id="footer">
+      <p id="helpblock" style="margin: auto;">
+            <a href="#_top"><button type="button" class="btn btn-primary btn-lg">Take me to the Top</button></a>
+           </p>
+
+</div>
+
+   <script src="jquery.min.js"></script>
+   <script src="bootstrap.min.js"></script>
+    <script src="dropdowns-enhancement.js"></script>
+  
+   </body>
+</html>

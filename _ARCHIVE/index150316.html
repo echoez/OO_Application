@@ -1,0 +1,335 @@
+<html ng-app="OutstandingApp">
+   <head>
+      <meta charset="utf-8">
+      <title>Outstanding_Orders</title>
+        <script src="angular.min.js"></script>
+      <script>
+         var OutstandingApp = angular.module('OutstandingApp', []);
+         OutstandingApp.controller('OOCtrl', function ($scope, $http){
+           $http.get('oo_report_min.json').success(function(data) {
+             $scope.ooreport = data;
+           });
+           $scope.sortField = 'ORDER_ID';
+         });
+
+
+      </script>
+      <link href="dropdowns-enhancement.css" rel="stylesheet">
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="css/style.css" rel="stylesheet">
+   </head>
+   <body ng-controller="OOCtrl" class="ng-cloak">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">OpsTech</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <!-- <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+        <li><a href="#">Link</a></li>
+       -->
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+          <li><img src="c_default.jpg" alt="..." class="img-thumbnail"></li>
+          <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Logged in as <b>Michael Cadet</b> <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">View Profile</a></li>
+            <li><a href="#">View Roster</a></li>
+            <li><a href="#">Account Setting</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Sign Out</a></li>
+          </ul>
+        </li>    
+
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+      <header id="_top">
+
+
+        <div class="background-image"></div>
+      
+         <div class="search_container">
+          <div class="inputwrap">
+            <input ng-model="query" type="text" ng-change="filter()" placeholder="Search Order Information" class="form-control" maxlength="20"></input><button type="button" class="btn btn-info insidebutton" ng-show="query.length" ng-click="query = ''">Clear</button></div>
+            <!-- <input type="button" class="btn btn-default btn-sm" value="search"> -->
+          <!--  <p id="helpblock">
+            <a href="#reportoo"> <button type="button" class="btn btn-default btn-xs">OO Report</button></a> <a href="#actionoo"><button type="button" class="btn btn-default btn-xs">OO Action Report</button></a>
+           </p> -->
+         </div>
+
+      </header>
+       <!-- <div id="b-title">
+            <h1>
+               <p class="bg-info">Displaying {{ooreport.length}} of <b>{{ooreport.length}}</b> Outstanding Shipments</p>
+            </h1>
+         </div> -->
+         <ol class="breadcrumb">
+  <li><a href="#">Home</a></li>
+  <li><a href="#">ITC</a></li>
+ <li class="active"> <b>Outstanding Orders</b></li>
+
+</ol>
+         <div class="wrapper ng-cloak">
+         <div class="row">
+                        <div class="col-xs-3">
+                            <div class="small-stat clearfix">
+                            <span ng-click="query = 'Oversold'" class="small-stat-icon orange"><i class="glyphicon glyphicon glyphicon-th"></i></span>
+                                <div class="small-stat-info">
+                                    <span>320</span>
+                                    CS Department
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="small-stat clearfix">
+                                <span ng-click="query = 'Hold'" class="small-stat-icon tar"><i class="glyphicon glyphicon glyphicon-th"></i></span>
+                                <div class="small-stat-info">
+                                    <span>0</span>
+                                    ITC
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="small-stat clearfix">
+                                <span ng-click="query = 'Not_Settled'" class="small-stat-icon pink"><i class="glyphicon glyphicon glyphicon-th"></i></span>
+                                <div class="small-stat-info">
+                                    <span>30</span>
+                                    Fulfillment
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="small-stat clearfix">
+                                <span ng-click="query = 'Missing_FF'" class="small-stat-icon green"><i class="glyphicon glyphicon glyphicon-th"></i></span>
+                                <div class="small-stat-info">
+                                    <span>327</span>
+                                    Security
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+      <div class="wrapper">
+      <div class="bs-callout bs-callout-info" id="callout-alerts-no-default" ng-show="query == 'Oversolds' || query == 'oversold'">
+    <h4>Oversolds</h4>
+    <p>
+    These orders should be noted as such in the Admin notes field or a ZD ticket. There is no further action required as these orders are handled by ITC.
+The Oversold Procedure should be followed at this point. 
+</p>
+  </div>
+
+      <div class="bs-callout bs-callout-info" id="callout-alerts-no-default" ng-show="query == 'Holds'">
+    <h4>Employee</h4>
+    <p>
+    These are internal orders that should be brought directly to security for pickup by an employee. It will show up on this report if it has not been settled by security.It is usually noted in the shipping address field.
+    </p>
+  </div>
+<button type="button" class="btn btn-primary btn-lg btn-block"  ng-show="query.length" ng-click="query = ''">Filtering Results by <b>"<u>{{query}}</u>"</b>. Want to Clear?</button>
+      
+  <div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div id="reportoo" class="panel-heading"><b>Outstanding Order Report</b> (2/28/2015) - (3/11/2015)</div> <span class="corner_badge navbar-right ng-cloak">Total: {{ooreport.length}}</span></li>
+  <div class="panel-body">
+  <p>
+This datagrid will display all orders exported in the last 90 days that do not have a “Complete” status
+ in Admin. This report will exclude all Drop Ship and Custom orders unless flagged and noted for some other Outstanding Order cause.
+         </p>
+         <hr>
+         <p style="text-align: center">
+            <a href="" ng-click="sortField = 'ORDER_ID' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Order Number</button></a>
+            <a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Export Date</button></a>
+            <a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Authorize Date</button></a>
+         </p>
+  </div>
+         <table class="table table-striped table-hover table-condensed table-bordered">
+            <tr>
+               <th>
+                  <input type="checkbox" 
+                     ng-click="selectAll($event)"
+                     ng-checked="isSelectedAll()">
+               </th>
+               <th><a href="" ng-click="sortfield = 'SHIPMENT_ID' ; reverse = !reverse">#</a></th>
+               <th><a href="" ng-click="sortField = 'SHIPMENT_ID' ; reverse = !reverse">Shipment ID</a></th>
+               <th><a href="" ng-click="sortField = 'ORDER_ID' ; reverse = !reverse">Order N</a></th>
+               <th><a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse">Exported</a></th>
+               <th><a href="" ng-click="sortField = 'STATUS' ; reverse = !reverse">Status</a></th>
+               <th><a href="" ng-click="sortField = 'WORKTYPE' ; reverse = !reverse">Worktype</a></th>
+               <th><a href="" ng-click="sortField = 'TRACKING_NUMBER'; reverse = !reverse">Tracking</a></th>
+               <th><a href="">Action</a></th>
+            </tr>
+            <tr ng-repeat-start="shipment in ooreport | filter:query | orderBy:sortField:reverse" ng-class="getSelectedClass(e)">
+               <td colspan="9" ng-show="!ooreport.length"> <p class="bg-info">No Results</p></td>
+               <td>
+                  <input type="checkbox" name="selected"
+                     ng-checked="isSelected(e.id)"
+                     ng-click="updateSelection($event, e.id)">
+               </td>
+               <td>{{$index + 1}}</td>
+               <td><button ng-if="shipment.expanded" ng-click="shipment.expanded = false">-</button>
+              <button ng-if="!shipment.expanded" ng-click="shipment.expanded = true">+</button> {{shipment.SHIPMENT_ID}}</td>
+               <td><a href="">{{shipment.ORDER_ID}}</a></td>
+               <td>{{shipment.EXPORT_TIME  | date}}</td>
+               <td><span class="label label-{{shipment.STATUS}}">{{shipment.STATUS}}</span></td>
+               <td>{{shipment.WORKTYPE}}</td>
+               <td>{{shipment.TRACKING_NUMBER}}</td>
+               <td style="min-width: 125px;">
+            <div class="btn-group">
+            <button class="btn btn-default btn-sm" data-label-placement=""><i style="color: #aaa;" class="glyphicon glyphicon-cog"></i> Option</button>
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+              <li>
+                <input type="radio" id="ex7_1mn_{{shipment.SHIPMENT_ID}}" name="egrx7_{{shipment.SHIPMENT_ID}}" value="142">
+                <label for="ex7_1mn_{{shipment.SHIPMENT_ID}}"><i style="color: #A9B36C;" class="glyphicon glyphicon-cog"></i> <b>Nothing</b></label>
+              </li>
+
+               <li>
+                <input type="radio" id="ex7_2mn_{{shipment.SHIPMENT_ID}}" name="egrx7_{{shipment.SHIPMENT_ID}}" value="142">
+                <label for="ex7_2mn_{{shipment.SHIPMENT_ID}}"><i style="color: #DF7C9E;" class="glyphicon glyphicon-arrow-up"></i> <b>Upgraded</b></label>
+              </li>
+
+              <li>
+                <input type="radio" id="ex7_3mn_{{shipment.SHIPMENT_ID}}" name="egrx7_{{shipment.SHIPMENT_ID}}" value="525">
+                <label for="ex7_3mn_{{shipment.SHIPMENT_ID}}"><i style="color: #79B36C;" class="glyphicon glyphicon-send"></i> <b>Settled</b></label>
+              </li>
+              <li>
+                <input type="radio" id="ex7_6mn_{{shipment.SHIPMENT_ID}}" name="egrx7_{{shipment.SHIPMENT_ID}}" value="335">
+                <label for="ex7_6mn_{{shipment.SHIPMENT_ID}}"><i style="color: #35A6CF;" class="glyphicon glyphicon-play"></i> <b>Hold Removed</b></label>
+              </li>
+              <li>
+                <input type="radio" id="ex7_8mn_{{shipment.SHIPMENT_ID}}" name="egrx7_{{shipment.SHIPMENT_ID}}" value="335">
+                <label for="ex7_8mn_{{shipment.SHIPMENT_ID}}"><i style="color: #eaA6CF;" class="glyphicon glyphicon-plane"></i> <b>Has Shipped</b></label>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <input type="radio" id="ex7_6h_{{shipment.SHIPMENT_ID}}" name="egrx7_{{shipment.SHIPMENT_ID}}" value="22">
+                <label for="ex7_6h_{{shipment.SHIPMENT_ID}}"><i style="color: #CC50E0;" class="glyphicon glyphicon-registration-mark"></i><b> Requeue</b></label>
+              </li>
+            </ul>
+          </div>
+
+
+               </td>
+            </tr>
+          <tr id="droprow" ng-if="shipment.expanded" ng-repeat-end="" class="well">
+            <td colspan="9">{{shipment.PICK_START_TIME}} | {{shipment.PICK_END_TIME}} | {{shipment['Latest ZD Ticket']}} | {{shipment.AUTHORIZED_ON}} | {{shipment['# of ZD Tickets']}} <br><br><br><br></td>
+          </tr>
+         </table>
+
+<br></div>
+</div>
+
+ <div class="wrapper">
+ <div class="panel panel-default">
+  <div class="panel-heading"><b>Action Taken</b> (2/28/2015) - (3/11/2015)</div> 
+      <div class="panel-body">
+      <p>
+         I am leaving early to make sure any details are taken care of 
+             </p>
+             <hr>
+      </div>
+         <table id="actionoo" class="table table-striped table-hover table-condensed table-bordered">
+             <tr>
+
+               <th><a href="" ng-click="sortfield = 'SHIPMENT_ID' ; reverse = !reverse">Order</a></th>
+               <th><a href="" ng-click="sortField = 'SHIPMENT_ID' ; reverse = !reverse">Shipment</a></th>
+               <th><a href="" ng-click="sortField = 'ORDER_ID' ; reverse = !reverse">Action Taken</a></th>
+               <th><a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse">Name</a></th>
+               <th><a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse">Time</a></th>
+               <th><a href="" ng-click="sortField = 'WORKTYPE' ; reverse = !reverse">Options</a></th>
+               
+            </tr>
+
+            <tr>
+            <td>1930022</td>
+            <td>3729832</td>
+            <td>Settled</td>
+            <td>Johnny Bravo</td>
+            <td>Hello</td>
+            <td>
+            <div class="btn-group">
+            <button class="btn btn-default" data-label-placement=""><i style="color: #BB285B;" class="glyphicon glyphicon-remove"></i></button>
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+              <li>
+                <input type="radio" id="ex7_2" name="ex7" value="2">
+                <label for="ex7_2"><i class="glyphicon glyphicon-trash data-label"></i>Requeue</label>
+              </li>
+              <li>
+                <input type="radio" id="ex7_3" name="ex7" value="3">
+                <label for="ex7_3"><i class="glyphicon glyphicon-print data-label"></i> Resolve</label>
+              </li>
+            </ul>
+          </div>
+            </td>
+            </tr>
+                        <tr>
+            <td>19300464</td>
+            <td>8292090</td>
+            <td>Needs Requeue</td>
+            <td>Tim Cook</td>
+            <td>Hello</td>
+            <td>   
+            <div class="btn-group">
+            <button class="btn btn-default" data-label-placement=""><i style="color: #BB285B;" class="glyphicon glyphicon-remove"></i></button>
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+              <li>
+                <input type="radio" id="ex7_2" name="ex7" value="2">
+                <label for="ex7_2"><i class="glyphicon glyphicon-trash data-label"></i>Requeue</label>
+              </li>
+              <li>
+                <input type="radio" id="ex7_3" name="ex7" value="3">
+                <label for="ex7_3"><i class="glyphicon glyphicon-print data-label"></i> Resolve</label>
+              </li>
+            </ul>
+          </div>
+          </td>
+          
+            </tr>
+                        <tr>
+            <td>19141333</td>
+            <td>7892922</td>
+            <td>Hold Removed</td>
+            <td>Bill Gates</td>
+            <td>Hello</td>
+            <td>
+            <button class="btn btn-default" data-label-placement=""><i style="color: #BB285B;" class="glyphicon glyphicon-remove"></i> Remove</button>
+            
+
+            </td>
+           
+            </tr>
+         </table>
+
+</div>
+
+         </div>
+
+  </div>
+<div id="footer">
+      <p id="helpblock" style="margin: auto;">
+            <a href="#_top"><button type="button" class="btn btn-primary btn-lg">Take me to the Top</button></a>
+           </p>
+
+</div>
+
+   <script src="jquery.min.js"></script>
+   <script src="bootstrap.min.js"></script>
+    <script src="dropdowns-enhancement.js"></script>
+  
+   </body>
+</html>

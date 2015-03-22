@@ -1,0 +1,92 @@
+<html ng-app="OutstandingApp">
+   <head>
+      <meta charset="utf-8">
+      <title>Outstanding_Orders</title>
+      <script src="angular.js"></script>
+      <script>
+         var OutstandingApp = angular.module('OutstandingApp', []);
+         OutstandingApp.controller('OOCtrl', function ($scope, $http){
+           $http.get('oo_report_min.json').success(function(data) {
+             $scope.ooreport = data;
+           });
+           $scope.sortField = 'ORDER_ID';
+         });
+      </script>
+      <script src="http://cameronspear.com/downloads/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js"></script>
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="css/style.css" rel="stylesheet">
+   </head>
+   <body ng-controller="OOCtrl">
+      <header>
+         <div class="search_container">
+            <h1>Search Report</h1>
+            <input ng-model="query" type="text" placeholder="Search Order Information" class="form-control" maxlength="10"></input>
+            <!-- <input type="button" class="btn btn-default btn-sm" value="search"> -->
+            <p id="helpblock"></p>
+         </div>
+      </header>
+        <div id="b-title">
+            <h1>
+               <p class="bg-info">There are <b>{{ooreport.length}}</b> total Outstanding Shipments</p>
+            </h1>
+         </div>
+      <div class="wrapper">
+       
+         <div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><b>Outstanding Order Report</b> (2/28/2015) - (3/11/2015)</div>
+  <div class="panel-body">
+     I am leaving early to make sure any details are taken care of before your arrival! Three people are driving, David A., Jackie, and Shah. Both David A. and Jackie can hold 2-3 people in their car. Also, I’ve ordered two cabs to meet everyone by the turnstiles at 4pm:
+         </p>
+         <hr>
+         <p style="text-align: center">
+            <a href="" ng-click="sortField = 'ORDER_ID' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Order Number</button></a>
+            <a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Export Date</button></a>
+            <a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse"><button type="button" class="btn btn-default">Sort by Authorize Date</button></a>
+         </p>
+  </div>
+         <table class="table table-striped table-hover table-condensed table-bordered">
+            <tr>
+               <th>
+                  <input type="checkbox" 
+                     ng-click="selectAll($event)"
+                     ng-checked="isSelectedAll()">
+               </th>
+               <th><a href="" ng-click="sortfield = 'SHIPMENT_ID' ; reverse = !reverse">#</a></th>
+               <th><a href="" ng-click="sortField = 'SHIPMENT_ID' ; reverse = !reverse">Shipment ID</a></th>
+               <th><a href="" ng-click="sortField = 'ORDER_ID' ; reverse = !reverse">Order N</a></th>
+               <th><a href="" ng-click="sortField = 'EXPORT_TIME' ; reverse = !reverse">Exported</a></th>
+               <th><a href="" ng-click="sortField = 'STATUS' ; reverse = !reverse">Status</a></th>
+               <th><a href="" ng-click="sortField = 'WORKTYPE' ; reverse = !reverse">Worktype</a></th>
+               <th><a href="" ng-click="sortField = 'TRACKING_NUMBER'; reverse = !reverse">Tracking</a></th>
+               <th><a href="">Action</a></th>
+            </tr>
+            <tr ng-repeat="shipment in ooreport | filter:query | orderBy:sortField:reverse" ng-class="getSelectedClass(e)" class="bggg_{{shipment.STATUS}}">
+               <td>
+                  <input type="checkbox" name="selected"
+                     ng-checked="isSelected(e.id)"
+                     ng-click="updateSelection($event, e.id)">
+               </td>
+               <td>{{$index + 1}}</td>
+               <td>{{shipment.SHIPMENT_ID}}</td>
+               <td><a href="">{{shipment.ORDER_ID}}</a></td>
+               <td>{{shipment.EXPORT_TIME  | date}}</td>
+               <td>{{shipment.STATUS}}</td>
+               <td class="worktype">{{shipment.WORKTYPE}}</td>
+               <td>{{shipment.TRACKING_NUMBER}}</td>
+               <td>
+<select id="my_selection">
+<option value="x" href="">Option</option>
+<option value="x" href="/link/to/somewhere">Hold</option>
+<option value="y" href="/link/to/somewhere/else">Resolve</option>
+<option value="y" href="/link/to/somewhere/else">Requeue</option>
+<option value="y" href="/link/to/somewhere/else">Urgent</option>
+</select>
+               </td>
+            </tr>
+         </table>
+         </div>
+      </div>
+
+   </body>
+</html>
